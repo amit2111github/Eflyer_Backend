@@ -117,7 +117,7 @@ exports.createProduct = (req, res, next) => {
 exports.getAllProduct = async (req, res) => {
 	console.log('All in');
 	try {
-		let limit = +req.query.limit || 5;
+		let limit = +req.query.limit || 6;
 		let sortBy = req.query.sortBy || '_id';
 		const product = await Product.find()
 			.select('-photo')
