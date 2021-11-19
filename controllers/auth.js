@@ -29,6 +29,7 @@ const sendMail = async (name, email) => {
 			html: `<p>Hello</p> <h2>${name}</h2> </br> <p>Welcome to the Eflyer Hope you will enjoy in shopping.</p></br><img src = "res.cloudinary.com/dnd5dhyzv/image/upload/v1636368072/Logo/logo_wmff3n.png">`,
 		});
 		const response = await transporter.sendMail(info);
+		console.log(response);
 	} catch (err) {
 		console.log(err);
 	}
