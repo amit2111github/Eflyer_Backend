@@ -22,7 +22,7 @@ const sendMail = async (name, email) => {
 			service: 'gmail',
 			auth: {
 				user: 'amit.dev.nit@gmail.com',
-				pass: 'AmitMandal@2111',
+				pass: 'amitmandal@2111',
 			},
 		});
 		let info = await transporter.sendMail({
