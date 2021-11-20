@@ -2,7 +2,7 @@ var express = require('express');
 const { body, validationResult } = require('express-validator');
 var router = express.Router();
 const User = require('../models/user.js');
-const { signOut, signUp, signIn, isSignedIn } = require('../controllers/auth');
+const { signOut, signUp, signIn, isSignedIn, googleSignin } = require('../controllers/auth');
 const user = require('./users');
 /* GET home page. */
 
@@ -17,7 +17,8 @@ router.post(
 	],
 	signUp
 );
-
+// signUpWithGoogle
+router.post('/signinwithGoogle', googleSignin);
 router.post(
 	'/signin',
 	[

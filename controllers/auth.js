@@ -6,7 +6,9 @@ const jwt = require('jsonwebtoken');
 const expressJwt = require('express-jwt');
 const { secret } = require('../config/vars');
 const nodemailer = require('nodemailer');
-//
+const { OAuth2Client } = require('google-auth-library');
+const { googleClientId } = require('../config/vars');
+const client = new OAuth2Client(googleClientId);
 
 https: exports.signOut = (req, res, next) => {
 	res.clearCookie('token');
@@ -15,6 +17,7 @@ https: exports.signOut = (req, res, next) => {
 
 const sendMail = async (name, email) => {
 	try {
+		console.log(name, email);
 		let transporter = nodemailer.createTransport({
 			service: 'gmail',
 			auth: {
@@ -26,12 +29,12 @@ const sendMail = async (name, email) => {
 			from: '"Eflyer 👻" <amit.dev.nit@gmail.com>',
 			to: email,
 			subject: 'Hello ✔',
-			html: `<p>Hello</p> <h2>${name}</h2> </br> <p>Welcome to the Eflyer Hope you will enjoy in shopping.</p></br><img src = "res.cloudinary.com/dnd5dhyzv/image/upload/v1636368072/Logo/logo_wmff3n.png">`,
+			html: `<p>Hello</p> <h2>${name}</h2> </br> <p>Welcome to the Eflyer Hope you will enjoy in shopping.</p>`,
 		});
 		const response = await transporter.sendMail(info);
 		console.log(response);
 	} catch (err) {
-		console.log(err);
+		console.log('Error was', err);
 	}
 };
 exports.signUp = (req, res, next) => {
@@ -74,6 +77,27 @@ exports.signIn = (req, res, next) => {
 	});
 };
 
+// google signin
+exports.googleSignin = async (req, res, next) => {
+	try {
+		// console.log('Inside', googleClientId);
+		const token = req.body.tokenId;
+		const ticket = await client.verifyIdToken({
+			idToken: token,
+			audience: googleClientId,
+		});
+		// console.log(' ticket ', ticket);
+		const { email } = ticket.getPayload();
+		const user = await User.findOne({ email: email });
+		if (!user || user === undefined) return res.json({ error: 'Email not Exist in Database' });
+		const SignIntoken = jwt.sign({ _id: user._id }, secret);
+		res.cookie('token', SignIntoken, { expire: new Date() + 9999 });
+		const { _id, name, role } = user;
+		return res.json({ token: SignIntoken, user: { _id, name, email, role } });
+	} catch (err) {
+		return res.json({ error: 'Something Went Wrong' });
+	}
+};
 exports.isSignedIn = expressJwt({
 	secret,
 	userProperty: 'auth',

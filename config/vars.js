@@ -15,4 +15,5 @@ module.exports = {
 	merchantId: process.env.PAYPAL_MERCHANT_ID,
 	publicKey: process.env.PAYPAL_PUBLIC_KEY,
 	privateKey: process.env.PAYPAL_PRIVATE_KEY,
+	googleClientId: process.env.GOOGLE_CLIENT_ID,
 };
